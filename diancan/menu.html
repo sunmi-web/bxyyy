@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #id_left, #id_right {
+      margin: 0;
+      position: absolute;
+      top: -1px;
+      font-size: 2.5rem;
+      border: 1px solid gray;
+      height: calc(100% - 120px);
+      padding: 10px;
+      text-align: center;
+      overflow: auto;
+    }
+
+    #id_left {
+      left: 0;
+      width: 20%;
+    }
+
+    #id_right {
+      left: calc(20% + 21px);
+      width: calc(80% - 42px);
+    }
+
+    #id_left div {
+      width: 70%;
+      margin: 30px auto 0 auto;
+      font-size: 2.5rem;
+      line-height: 2.5rem;
+      border: 1px solid gray;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    #id_cart {
+      position: fixed;
+      left: 0;
+      bottom: -1px;
+      border: 1px solid gray;
+      width: 100%;
+      height: 150px;
+      background: #eee;
+      -webkit-transition: .3s;
+      -moz-transition: .3s;
+      -ms-transition: .3;
+      -o-transition: .3s;
+      transition: .3s;
+      overflow: hidden;
+    }
+
+    #id_totle_pos {
+      position: relative;
+      left: -55px;
+      top: -120px;
+    }
+
+    #id_totle {
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: red;
+      border-radius: 2rem;
+      width: 3rem;
+      height: 3rem;
+      padding: .5rem;
+      text-align: center;
+      font-size: 3rem;
+      line-height: 3rem;
+      color: #fff;
+    }
+
+    #id_amount_pos {
+      position: relative;
+      left: 9px;
+      top: -27px;
+      font-size: 24px;
+      color: #f00;
+    }
+
+    #id_amount {
+      position: absolute;
+      left: 18px;
+      top: -4px;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      font-size: 54px;
+    }
+
+    #id_detail {
+      position: absolute;
+      left: 285px;
+      top: 4px;
+      font-size: 2rem;
+    }
+
+    #id_cover {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      text-align: right;
+      background:rgba(255,255,255,0.1);
+      /*border: 2px solid green;*/
+
+    }
+
+    #id_order {
+      font-size: 3rem;
+      color: #fff;
+      margin-top: 2px;
+      margin-right: 4px;
+      background: green;
+      width: 7rem;
+      height: 9rem;
+    }
+  </style>
+</head>
+<body>
+<!--menu.html-->
+<div id="id_left">
+</div>
+<div id="id_right">abc</div>
+<div id="id_cart">
+  <img src="shopcart.png" width="150" style="margin-left:10px;"/>
+  <span id="id_totle_pos"><div id="id_totle">0</div></span>
+  <span id="id_amount_pos">¥<span id="id_amount">0</span></span>
+  <span id="id_detail"></span>
+  <!--避免手机点击文字引起翻译-->
+  <div id="id_cover">
+    <button id="id_order">下<br>单</button>
+  </div>
+</div>
+</body>
+</html>
+<script>
+  var obj = {
+    a: [
+      '主食',
+      ['烤龙虾盖浇饭 +炖蛋 麻辣', 188, 23, 38],
+      ['海鲜炖蛋', 188, 23, 38],
+      ['B 黑椒牛肉粒潮范+奥尔良鸡排', 96, 18, 30],
+      ['夏威夷阿波罗培根焗饭 +送酸奶', 1255, 27, 28],
+      ['乡村罗勒虾仁炒饭', 1255, 18, 26]
+    ],
+    b: [
+      '炒菜',
+      ['葱爆肥牛便当', 5, 0, 29],
+      ['酸汤肥牛饭', 5, 0, 29],
+      ['牛肉粒潮范+奥尔良鸡排', 96, 18, 30],
+      ['阿波罗培根焗饭 +送酸奶', 1255, 27, 28],
+      ['仁炒饭', 1255, 18, 26]
+    ],
+    c: [
+      '粥汤',
+      ['海鲜炖蛋', 188, 23, 38],
+      ['烤龙虾盖浇饭', 188, 23, 38],
+      ['B 黑椒牛肉粒潮范', 96, 18, 30],
+      ['乡村罗勒虾仁炒饭', 1255, 18, 26],
+      ['培根焗饭 +送酸奶', 1255, 27, 28]
+    ],
+    d: [
+      '零食',
+      ['夏威夷阿波罗培根焗饭 +送酸奶', 1255, 27, 28],
+      ['烤龙虾盖浇饭 +炖蛋 麻辣', 188, 23, 38],
+      ['海鲜炖蛋', 188, 23, 38],
+      ['B 黑椒牛肉粒潮范+奥尔良鸡排', 96, 18, 30],
+      ['韩式泡菜肥牛', 1255, 18, 26]
+    ]
+  };
+
+  order = {};
+  totle = 0;
+  amount = 0;
+  filter = 0;
+  evt = ('createTouch' in document || 'ontouchstart' in window) ? 'ontouchstart' : 'onmousedown';
+
+  showType();
+  showMenu();
+
+  queryOffset = new function(){
+    var cache = {};
+    return function(a){
+      if(!cache[a]){
+        cache[a] = document.querySelector('a[name=' + a + ']').offsetTop;
+      }
+      return cache[a];
+    }
+  };
+
+  id_right.onscroll = function(){
+    large(1);
+    var top = id_right.scrollTop;
+    var len = id_left.children.length - 1;
+
+    if(top == 0){
+      //当一屏可以完全显示
+      hightlightButton(0);
+    }
+    else if(top == id_right.scrollHeight - id_right.clientHeight){
+      //当已经到头了
+      hightlightButton(len - 1);
+    }
+    else{
+      var i = -1;
+      for(var type in obj){
+        i++;
+        if(i == 0){
+          //跳过第一个
+          continue;
+        }
+        else if(top < queryOffset(type)){
+          //没到第2个,显示第1个
+          //没到第3个,显示第2个
+          hightlightButton(i - 1);
+          return;
+        }
+      }
+      //前面都不符合,说明在最后一个
+      hightlightButton(len - 1);
+    }
+  };
+
+  showCart();
+  setTimeout(function(){
+    changeType('a');
+  }, 100);
+
+  id_cover[evt] = large;
+  id_order[evt] = bookOrder;
+
+  function setFilter(node){
+    filter         = !filter;
+    node.innerHTML = filter ? '所有' : '已点';
+    showMenu(filter);
+    id_right.onscroll();
+  }
+
+  function showType(){
+    var s = '';
+    for(var type in obj){
+      s += '<div ' + evt + '=changeType("' + type + '")>' + obj[type][0] + '</div>';
+    }
+    s += '<div ' + evt + '="setFilter(this)">已点</div>';
+    id_left.innerHTML = s;
+  }
+
+  function showMenu(filter){
+    var str    = '';
+    var num;
+    var hidden = '';
+    for(var type in obj){
+      var arr = obj[type];
+      var info;
+      str += '<a name="' + type + '">&nbsp;<br>';
+      str += '====== ' + obj[type][0] + ' ======';
+      str += '</a><br>';
+      for(var i = 1, l = arr.length; i < l; i++){
+        info = arr[i];
+        num  = order[type + '_' + i] || 0;
+        if(!num){
+          if(filter){
+            continue;
+          }
+          hidden = 'display:none;';
+        }
+        str += '<table style="text-align:left" cellspacing="10" width="100%"><tr>';
+        str += '<td width="10"><img src="applogo.jpg" style="width:12rem;"/></td>';
+        str += '<td><span style="font-size:3rem;">' + info[0] + '</span><br>';
+        str += '<span style="font-size:2rem;color:gray;line-height:3rem;">月售' + info[1] + '份 好评';
+        str += info[2] + '</span><br>';
+        str += '<span style="font-size:3rem;color:red"><small>¥</small>' + info[3] + '</span>';
+        str += '<span style="float:right;margin-top: -1px;">';
+
+        str += '<img src="favicon.png" style="' + hidden + 'width:3rem;" data-type="' + type + '" data-index="' + i + '" ' + evt + '="addOne(this, -1)"/>';
+        str += '<span style="' + hidden + 'font-size:3rem;margin:0 1rem 0 1rem;text-align:center">' + num + '</span>';
+
+        str += '<img src="favicon.png" style="width:3rem;" data-type="' + type + '" data-index="' + i + '" ' + evt + '="addOne(this, 1)"/>';
+        str += '</span></td>';
+        str += '</tr></table>';
+      }
+    }
+    str += '&nbsp';
+    //str += '&nbsp;<br><br>end&nbsp;';
+    id_right.innerHTML = str;
+  }
+
+  function changeType(type){
+    id_right.scrollTop = queryOffset(type);
+  }
+
+  function hightlightButton(a){
+    for(var i = 0, l = id_left.children.length; i < l; i++){
+      id_left.children[i].style.background = i == a ? '#ccc' : '';
+    }
+  }
+
+  function addOne(node, num){
+    var key = node.dataset.type + '_' + node.dataset.index;
+    if(num == 1){
+      show(node.previousElementSibling.previousElementSibling);
+      show(node.previousElementSibling);
+      order[key]                            = (order[key] || 0) + 1;
+      node.previousElementSibling.innerHTML = order[key];
+    }
+    else{
+      order[key] -= 1;
+      if(order[key] == 0){
+        delete order[key];
+        hide(node);
+        hide(node.nextElementSibling);
+      }
+      node.nextElementSibling.innerHTML = order[key];
+    }
+
+    totle += num;
+    amount += obj[node.dataset.type][node.dataset.index][3] * num;
+
+    showCart();
+  }
+
+  function showCart(){
+    if(totle){
+      show(id_totle_pos);
+      show(id_amount_pos);
+      id_totle.innerHTML       = totle;
+      id_amount.innerHTML      = amount;
+      id_amount.style.fontSize = amount >= 1000 ? '44px' : '54px';
+    }
+    else{
+      hide(id_totle_pos);
+      hide(id_amount_pos);
+    }
+
+    var s = '';
+    var s1;
+    var item;
+    for(var i in order){
+      item = i.split('_');
+      item = obj[item[0]][item[1]];
+      s1   = '<tr>';
+      s1 += td(item[0]);
+      s1 += td(order[i]);
+      s1 += td('¥' + item[3] * order[i]);
+
+      s1 += '</tr>';
+
+      s = s1 + s;
+    }
+
+    if(!s){
+      s = '<br><br>购物车是空的';
+    }
+
+    id_detail.innerHTML = '<table cellspacing="5">' + s + '</table>';
+  }
+
+  function large(a){
+    //a==1时,强制设为150px
+    if(a!=1 && id_cart.style.height == '150px'){
+      id_cart.style.height = Math.max(150, id_detail.offsetHeight + 10) + 'px';
+    }
+    else if(id_cart.style.height != '150px'){
+      id_cart.style.height = '150px';
+    }
+  }
+
+  function bookOrder(e){
+    e.stopPropagation();
+    alert('订餐成功');
+  }
+
+  function td(s){
+    return '<td>' + s + '</td>';
+  }
+
+  function hide(node){
+    node.style.display = 'none';
+  }
+
+  function show(node){
+    node.style.display = '';
+  }
+</script>
