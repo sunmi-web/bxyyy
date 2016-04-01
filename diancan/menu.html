@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="user-scalable=0" />
   <title>Title</title>
   <style>
     html, body {
@@ -39,8 +40,9 @@
       font-size: 2.5rem;
       line-height: 2.5rem;
       border: 1px solid gray;
-      padding: 1rem;
+      padding: 2rem 1rem;
       text-align: center;
+      letter-spacing: .5rem;
     }
 
     #id_cart {
@@ -82,7 +84,7 @@
 
     #id_amount_pos {
       position: relative;
-      left: 9px;
+      left: 3px;
       top: -27px;
       font-size: 24px;
       color: #f00;
@@ -253,7 +255,7 @@
     for(var type in obj){
       s += '<div ' + evt + '=changeType("' + type + '")>' + obj[type][0] + '</div>';
     }
-    s += '<div ' + evt + '="setFilter(this)">已点</div>';
+    s += '<br><div ' + evt + '="setFilter(this)">已点</div>';
     id_left.innerHTML = s;
   }
 
@@ -279,15 +281,15 @@
         str += '<table style="text-align:left" cellspacing="10" width="100%"><tr>';
         str += '<td width="10"><img src="applogo.jpg" style="width:12rem;"/></td>';
         str += '<td><span style="font-size:3rem;">' + info[0] + '</span><br>';
-        str += '<span style="font-size:2rem;color:gray;line-height:3rem;">月售' + info[1] + '份 好评';
+        str += '<span style="font-size:2rem;color:gray;line-height:3rem;">月售' + info[1] + '份 日售';
         str += info[2] + '</span><br>';
-        str += '<span style="font-size:3rem;color:red"><small>¥</small>' + info[3] + '</span>';
-        str += '<span style="float:right;margin-top: -1px;">';
+        str += '<span style="font-size:5rem;color:red"><small>¥</small>' + info[3] + '</span>';
+        str += '<span style="float:right;margin-top: -5px;">';
 
-        str += '<img src="favicon.png" style="' + hidden + 'width:3rem;" data-type="' + type + '" data-index="' + i + '" ' + evt + '="addOne(this, -1)"/>';
-        str += '<span style="' + hidden + 'font-size:3rem;margin:0 1rem 0 1rem;text-align:center">' + num + '</span>';
+        str += '<img src="decr.png" style="' + hidden + 'width:5rem;" data-type="' + type + '" data-index="' + i + '" ' + evt + '="addOne(this, -1)"/>';
+        str += '<span style="' + hidden + 'font-size:6rem;margin:0 1rem;color:red">' + num + '</span>';
 
-        str += '<img src="favicon.png" style="width:3rem;" data-type="' + type + '" data-index="' + i + '" ' + evt + '="addOne(this, 1)"/>';
+        str += '<img src="incr.png" style="width:5rem;" data-type="' + type + '" data-index="' + i + '" ' + evt + '="addOne(this, 1)"/>';
         str += '</span></td>';
         str += '</tr></table>';
       }
@@ -367,9 +369,11 @@
     id_detail.innerHTML = '<table cellspacing="5">' + s + '</table>';
   }
 
-  function large(a){
+  function large(e){
     //a==1时,强制设为150px
-    if(a!=1 && id_cart.style.height == '150px'){
+    if(e!=1 && id_cart.style.height == '150px'){
+      e.stopPropagation();
+
       id_cart.style.height = Math.max(150, id_detail.offsetHeight + 10) + 'px';
     }
     else if(id_cart.style.height != '150px'){
